@@ -1,4 +1,6 @@
 using CodeFirstEFAPI.Data;
+using CodeFirstEFAPI.Models;
+using CodeFirstEFAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,11 @@ builder.Services.AddSwaggerGen();
 //Configure DBContext
 var connectionString = builder.Configuration.GetConnectionString("dbcs");
 builder.Services.AddDbContext<StudentDBContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.Configure<AzureBlobSettings>(builder.Configuration.GetSection("AzureBlobSettings"));
+
+builder.Services.AddSingleton<IBlobService, BlobService>();
+builder.Services.AddScoped<IContainers, Containers>();
 
 var app = builder.Build();
 
