@@ -32,16 +32,33 @@ namespace CodeFirstEFAPI.Controllers
         public async Task<IActionResult> GetAllContainers()
         {
             var response = await _containers.GetAllContainers();
+
             return Ok(response);
         }
 
-        [HttpGet]
-        [Route("gelcontainer")]
-        public async Task<IActionResult> GetContainer(string contaienerName)
+        [HttpPost("createcontainer")]
+        public async Task<IActionResult> CreateContainer(string containerName)
         {
-            var response = await _containers.GetContainer(contaienerName);
+            if(string.IsNullOrEmpty(containerName))
+            {
+                return BadRequest("Container name should not be blank");
+            }
 
+            var response = await _containers.CreateContainer(containerName);
             return Ok(response);
         }
+
+        [HttpDelete("deletecontainer")]
+        public async Task<IActionResult> DeleteContainer(string containerName)
+        {
+            if(string.IsNullOrEmpty (containerName))
+            {
+                return BadRequest("Container name should not be empty");
+            }
+
+            var response = await _containers.DeleteContainer(containerName);
+            return Ok(response);
+        }
+
     }
 }

@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs;
 using CodeFirstEFAPI.Data;
 using CodeFirstEFAPI.Models;
 using CodeFirstEFAPI.Services;
@@ -18,6 +19,7 @@ builder.Services.AddDbContext<StudentDBContext>(options => options.UseSqlServer(
 
 builder.Services.Configure<AzureBlobSettings>(builder.Configuration.GetSection("AzureBlobSettings"));
 
+builder.Services.AddSingleton(config => new BlobServiceClient(builder.Configuration.GetValue<string>("AzStorageConnString")));
 builder.Services.AddSingleton<IBlobService, BlobService>();
 builder.Services.AddScoped<IContainers, Containers>();
 
