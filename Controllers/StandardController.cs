@@ -27,5 +27,11 @@ namespace CodeFirstEFAPI.Controllers
 
             return Ok(standardList);
         }
+
+        [HttpGet("error-handle")]
+        public IActionResult ErrorHandle()
+        {
+            throw new Exception("Custom error message generated");
+        }
     }
 }

@@ -1,5 +1,6 @@
 using Azure.Storage.Blobs;
 using CodeFirstEFAPI.Data;
+using CodeFirstEFAPI.Middleware;
 using CodeFirstEFAPI.Models;
 using CodeFirstEFAPI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +18,13 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("dbcs");
 builder.Services.AddDbContext<StudentDBContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.Configure<AzureBlobSettings>(builder.Configuration.GetSection("AzureBlobSettings"));
+#region Commented for Azure connection string
+//builder.Services.Configure<AzureBlobSettings>(builder.Configuration.GetSection("AzureBlobSettings"));
 
-builder.Services.AddSingleton(config => new BlobServiceClient(builder.Configuration.GetValue<string>("AzStorageConnString")));
-builder.Services.AddSingleton<IBlobService, BlobService>();
-builder.Services.AddScoped<IContainers, Containers>();
+//builder.Services.AddSingleton(config => new BlobServiceClient(builder.Configuration.GetValue<string>("AzStorageConnString")));
+//builder.Services.AddSingleton<IBlobService, BlobService>();
+//builder.Services.AddScoped<IContainers, Containers>();
+#endregion
 
 var app = builder.Build();
 
@@ -34,6 +37,9 @@ if (app.Environment.IsDevelopment())
 
 //Commented for certification issue
 //app.UseHttpsRedirection();
+
+//Add custom middlewares
+app.UseMiddleware<CustomExceptionMiddleware>();
 
 app.UseAuthorization();
 
