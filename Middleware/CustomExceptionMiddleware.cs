@@ -21,7 +21,7 @@ namespace CodeFirstEFAPI.Middleware
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unhandled exception occurred!");
+                _logger.LogError(ex, "Testing!");
 
                 var response = context.Response;
                 response.ContentType = "application/json";
