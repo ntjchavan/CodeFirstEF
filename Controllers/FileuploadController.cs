@@ -18,14 +18,27 @@ namespace CodeFirstEFAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadFile(IFormFile file)
+        [Route("BlobUploadByContainerName")]
+        public async Task<IActionResult> BlobUploadByContainerName([FromQuery] string containerName, IFormFile formFile)
         {
-            if (file == null || file.Length == 0)
+            var response = await _blobService.FileUploadByContainerNameAsync(containerName, formFile);
+
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        [Route("blobdelete")]
+        public async Task<IActionResult> BlobDelete(string containerName, string blobName)
+        {
+            if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(blobName))
             {
-                return BadRequest("File not selected");
+                return BadRequest("Container name & blob name are require.");
             }
-            var result = await _blobService.FileUploadAsync(file);
-            return Ok(result);
+            var result = await _blobService.FileDeleteByContainerNameAndFileName(containerName,blobName);
+            if (result)
+                return Ok($"Blobl {blobName} deleted successfully from container {containerName}");
+
+            return NotFound($"Blob {blobName} not found in container {containerName}");
         }
 
         [HttpGet("getallcontainers")]

@@ -5,6 +5,12 @@ VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeFirstEFAPI", "CodeFirstEFAPI.csproj", "{39BFAE94-A4FD-431C-A434-256523983820}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DotNetProject", "DotNetProject", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AzFunctions", "AzFunctions", "{CFB26C59-9BDE-46FD-A6D3-9EF01E5ACBC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzFunctionApp", "..\AzFunctionApp\AzFunctionApp.csproj", "{80CBF311-EFD5-480C-BCCC-42D201F4568D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +21,17 @@ Global
 		{39BFAE94-A4FD-431C-A434-256523983820}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39BFAE94-A4FD-431C-A434-256523983820}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39BFAE94-A4FD-431C-A434-256523983820}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80CBF311-EFD5-480C-BCCC-42D201F4568D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80CBF311-EFD5-480C-BCCC-42D201F4568D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80CBF311-EFD5-480C-BCCC-42D201F4568D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80CBF311-EFD5-480C-BCCC-42D201F4568D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{39BFAE94-A4FD-431C-A434-256523983820} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{80CBF311-EFD5-480C-BCCC-42D201F4568D} = {CFB26C59-9BDE-46FD-A6D3-9EF01E5ACBC9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F66FCA6A-2B9F-44F6-9A25-0AFE3ABBCFE5}
