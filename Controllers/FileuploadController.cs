@@ -18,7 +18,7 @@ namespace CodeFirstEFAPI.Controllers
         }
 
         [HttpPost]
-        [Route("BlobUploadByContainerName")]
+        [Route("upload-blob")]
         public async Task<IActionResult> BlobUploadByContainerName([FromQuery] string containerName, IFormFile formFile)
         {
             var response = await _blobService.FileUploadByContainerNameAsync(containerName, formFile);
@@ -26,8 +26,34 @@ namespace CodeFirstEFAPI.Controllers
             return Ok(response);
         }
 
+        [HttpGet("list-blobs")]
+        public async Task<IActionResult> GetAllListBlobs([FromQuery] string containerName)
+        {
+            var response = await _blobService.GetAllBlobsByContainerName(containerName);
+
+            if(!response.Any())
+            {
+                return NotFound("No blobs found in container - " + containerName);
+            }
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("get-blobs-metadata")]
+        public async Task<IActionResult> GetBlobMetaData(string containerName, string blobName)
+        {
+            var response = await _blobService.GetBlobMetadata(containerName, blobName);
+
+            if (response.Count == 0)
+            {
+                return NotFound($"Blob not found in container: {containerName}, with name: {blobName}");
+            }
+
+            return Ok(response);
+        }
+
         [HttpDelete]
-        [Route("blobdelete")]
+        [Route("blob-delete")]
         public async Task<IActionResult> BlobDelete(string containerName, string blobName)
         {
             if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(blobName))
@@ -39,6 +65,17 @@ namespace CodeFirstEFAPI.Controllers
                 return Ok($"Blobl {blobName} deleted successfully from container {containerName}");
 
             return NotFound($"Blob {blobName} not found in container {containerName}");
+        }
+
+        [HttpGet("blob-download")]
+        public async Task<IActionResult> BlobDownload([FromQuery] string containerName, [FromQuery] string blobName)
+        {
+            var (content, contentType) = await _blobService.BlobDownload(containerName, blobName);
+
+            if (content == null)
+                return NotFound($"Blob not found - {blobName}");
+
+            return File(content, contentType ?? "application/octet-stream", blobName);
         }
 
         [HttpGet("getallcontainers")]
