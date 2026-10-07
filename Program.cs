@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddControllers().AddXmlSerializerFormatters(); // Add support for XML
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -19,11 +20,11 @@ var connectionString = builder.Configuration.GetConnectionString("dbcs");
 builder.Services.AddDbContext<StudentDBContext>(options => options.UseSqlServer(connectionString));
 
 #region Commented for Azure connection string
-//builder.Services.Configure<AzureBlobSettings>(builder.Configuration.GetSection("AzureBlobSettings"));
+builder.Services.Configure<AzureBlobSettings>(builder.Configuration.GetSection("AzureBlobSettings"));
 
-//builder.Services.AddSingleton(config => new BlobServiceClient(builder.Configuration.GetValue<string>("AzStorageConnString")));
-//builder.Services.AddSingleton<IBlobService, BlobService>();
-//builder.Services.AddScoped<IContainers, Containers>();
+builder.Services.AddSingleton(config => new BlobServiceClient(builder.Configuration.GetValue<string>("AzStorageConnString")));
+builder.Services.AddSingleton<IBlobService, BlobService>();
+builder.Services.AddScoped<IContainers, Containers>();
 #endregion
 
 var app = builder.Build();
