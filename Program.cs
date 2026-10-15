@@ -20,9 +20,11 @@ var connectionString = builder.Configuration.GetConnectionString("dbcs");
 builder.Services.AddDbContext<StudentDBContext>(options => options.UseSqlServer(connectionString));
 
 #region Commented for Azure connection string
-builder.Services.Configure<AzureBlobSettings>(builder.Configuration.GetSection("AzureBlobSettings"));
+// Bind AzureBlobSettings using AddOptions().Bind to avoid binary-incompatible Binder extension calls
+builder.Services.AddOptions<AzureBlobSettings>().Bind(builder.Configuration.GetSection("AzureBlobSettings"));
 
-builder.Services.AddSingleton(config => new BlobServiceClient(builder.Configuration.GetValue<string>("AzStorageConnString")));
+// Use indexer to read connection string to avoid ConfigurationBinder.GetValue<T> binary-incompatible extension
+builder.Services.AddSingleton(config => new BlobServiceClient(builder.Configuration["AzStorageConnString"]));
 builder.Services.AddSingleton<IBlobService, BlobService>();
 builder.Services.AddScoped<IContainers, Containers>();
 #endregion
