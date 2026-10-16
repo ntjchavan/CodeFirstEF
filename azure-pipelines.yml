@@ -1,0 +1,16 @@
+name: AzurePipeline$(date:yyyyMMdd)$(rev:.r)
+
+trigger: none
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+  - script: echo "Hello world!"
+    displayName: "Step 1: Print hello world"
+
+  - script: echo "Welcome to Azure pipelines!"
+    displayName: "Step 2: Print welcome message"
+
+  - script: echo "Build completed successfully!"
+    displayName: "Step 3: print build completed!"
