@@ -3,7 +3,7 @@ name: AzurePipeline$(date:yyyyMMdd)$(rev:.r)
 trigger: none
 
 pool:
-  viImage: 'windows-latest'
+  vmImage: 'windows-latest'
 
 steps:
   - script: echo "Hello world!"
