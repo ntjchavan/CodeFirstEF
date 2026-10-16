@@ -5,25 +5,24 @@ trigger: none
 pool:
   vmImage: 'windows-latest'
 
-variables: 
-  environmentName: 'Development'
-  runTests: 'true'
-
 steps:
-  - script: echo "Pipeline started successfully"
-    displayName: "Step 1: Start Pipeline"
+  - powershell: |
+      $outputDir = "$(Build.ArtifactStagingDirectory)"
 
-  - script: echo "Deploying to $(environmentName)"
-    displayName: "Step 2: Display Environment"
+      New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
 
-  - script: echo "Running automated tests"
-    displayName: "Step 3: - Run tests"
-    condition: and(succeeded(), eq(variables['runTests'], 'true'))
+      $filePath = Join-Path $outputDir "build-info.txt"
 
-  - script: echo "This step always executes"
-    displayName: "Step 4: Always Run"
-    condition: always()
+      "Application: SampleApplication" | Set-Content $filePath
+      "Build ID: $(Build.BuildId)" | Add-Content $filePath
+      "Source Branch: $(Build.SourceBranch)" | Add-Content $filePath
 
-  - script: echo "This step only runs if a previous step fails"
-    displayName: "Step 5: Failure handler"
-    condition: failed()
+      Write-Host "Build information file created"
+    displayName: "Step 1: Create build output"
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Step 2: Publish artifacts"
+    inputs:
+      targetPath: '$(Build.ArtifactoryStagingDirector)'
+      artifact: 'drop'
+      publishLocation: pipeline
