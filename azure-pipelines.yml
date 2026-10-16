@@ -1,16 +1,29 @@
-name: AzurePipeline$(date:yyyyMMdd)$(rev:.r)
+name: AzurePipeline$(date:yyyyMMdd)_$(rev:.r)
 
 trigger: none
 
 pool:
   vmImage: 'windows-latest'
 
+variables: 
+  environmentName: 'Development'
+  runTests: 'true'
+
 steps:
-  - script: echo "Hello world!"
-    displayName: "Step 1: Print hello world"
+  - script: echo "Pipeline started successfully"
+    displayName: "Step 1: Start Pipeline"
 
-  - script: echo "Welcome to Azure pipelines!"
-    displayName: "Step 2: Print welcome message"
+  - script: echo "Deploying to $(environmentName)"
+    displayName: "Step 2: Display Environment"
 
-  - script: echo "Build completed successfully!"
-    displayName: "Step 3: print build completed!"
+  - script: echo "Running automated tests"
+    displayName: "Step 3: - Run tests"
+    condition: and(succeeded(), eq(variables['runTests'], 'true'))
+
+  - script: echo "This step always executes"
+    displayName: "Step 4: Always Run"
+    condition: always()
+
+  - script: echo "This step only runs if a previous step fails"
+    displayName: "Step 5: Failure handler"
+    condition: failed()
