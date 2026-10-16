@@ -23,6 +23,6 @@ steps:
   - task: PublishBuildArtifacts@1
     displayName: "Step 2: Publish artifacts"
     inputs:
-      targetPath: '$(Build.ArtifactoryStagingDirector)'
+      targetPath: '$(Build.ArtifactStagingDirectory)'
       artifact: 'drop'
       publishLocation: pipeline
