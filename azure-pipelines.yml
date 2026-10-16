@@ -4,13 +4,30 @@ trigger: none
 
 pool:
   vmImage: 'windows-latest'
+  
+variables: 
+  appName: 'Code First EF API'
+  environmentName: 'Development'
+  buildConfiguration: 'Release'
 
 steps:
-  - script: echo "Hello world!"
-    displayName: "Step 1: Print hello world"
+  - script: echo "Hello from Azure DevOps pipeline"
+    displayName: "Step 1: Hello pipeline"
 
-  - script: echo "Welcome to Azure pipelines!"
-    displayName: "Step 2: Print welcome message"
+  - script: echo "Application name is - $(appName)"
+    displayName: "Step 2: Display application name"
 
-  - script: echo "Build completed successfully!"
-    displayName: "Step 3: print build completed!"
+  - script: echo "Environment is - $(environmentname)"
+    displayName: "Step 3: Display Environment Name"
+
+  - script: echo "Build configuration is - $(buildConfiguration)"
+    displayName: "Step 4: Display build configuration"
+
+  - script: echo "Build ID is - $(Build.BuildId)"
+    displayName: "Step 5: Build ID"
+
+  - script: echo "Build Number is - $(Build.BuildNumber)"
+    displayName: "Step 6: Build Number"
+
+  - script: echo "Source Directory is - $(Build.SourcesDirectory)"
+    displayName: "Step 7: Source Directory"
