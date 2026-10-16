@@ -1,4 +1,4 @@
-name: AzurePipeline$(date:yyyyMMdd)_$(rev:.r)
+name: AzurePipeline$(date:yyyyMMdd)$(rev:.r)
 
 trigger: none
 
@@ -17,11 +17,11 @@ steps:
       "Build ID: $(Build.BuildId)" | Add-Content $filePath
       "Source Branch: $(Build.SourceBranch)" | Add-Content $filePath
 
-      Write-Host "Build information file created"
-    displayName: "Step 1: Create build output"
+      Write-Host "Build information file created."
+    displayName: 'Step 1 - Create Build Output'
 
-  - task: PublishBuildArtifacts@1
-    displayName: "Step 2: Publish artifacts"
+  - task: PublishPipelineArtifact@1
+    displayName: 'Step 2 - Publish Artifact'
     inputs:
       targetPath: '$(Build.ArtifactStagingDirectory)'
       artifact: 'drop'
