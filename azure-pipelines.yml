@@ -1,33 +1,28 @@
-name: AzurePipeline$(date:yyyyMMdd)$(rev:.r)
+name: AzurePipeline$(date:yyyyMMdd)_$(rev:.r)
 
 trigger: none
 
 pool:
   vmImage: 'windows-latest'
-  
+
 variables: 
-  appName: 'Code First EF API'
   environmentName: 'Development'
-  buildConfiguration: 'Release'
+  runTests: 'true'
 
 steps:
-  - script: echo "Hello from Azure DevOps pipeline"
-    displayName: "Step 1: Hello pipeline"
+  - script: echo "Pipeline started successfully"
+    displayName: "Step 1: Start Pipeline"
 
-  - script: echo "Application name is - $(appName)"
-    displayName: "Step 2: Display application name"
+  - script: echo "Deploying to $(environmentName)"
+    displayName: "Step 2: Display Environment"
 
-  - script: echo "Environment is - $(environmentname)"
-    displayName: "Step 3: Display Environment Name"
+  - script: echo "Running automated tests"
+    displayName: "Step 3: - Run tests"
+    condition: and(succeeded(), eq(variables['runTests'], 'true'))
 
-  - script: echo "Build configuration is - $(buildConfiguration)"
-    displayName: "Step 4: Display build configuration"
+  - script: echo "This step always executes"
+    displayName: "Step 4: Always Run"
 
-  - script: echo "Build ID is - $(Build.BuildId)"
-    displayName: "Step 5: Build ID"
-
-  - script: echo "Build Number is - $(Build.BuildNumber)"
-    displayName: "Step 6: Build Number"
-
-  - script: echo "Source Directory is - $(Build.SourcesDirectory)"
-    displayName: "Step 7: Source Directory"
+  - script: echo "This step only runs if a previous step fails"
+    displayName: "Step 5: Failure handler"
+    condition: failed()
