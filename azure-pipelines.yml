@@ -22,6 +22,7 @@ steps:
 
   - script: echo "This step always executes"
     displayName: "Step 4: Always Run"
+    condition: always()
 
   - script: echo "This step only runs if a previous step fails"
     displayName: "Step 5: Failure handler"
