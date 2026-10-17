@@ -5,7 +5,22 @@ trigger: none
 pool:
   vmImage: 'windows-latest'
 
+variables: 
+  appName: 'Code First EF API'
+  environmentName: "Development"
+  runTests: 'true'
+
 steps:
+  - script: echo "Application name is - $(appName)"
+    displayName: "Step 1: Display application name"
+
+  - script: echo "Deploying to $(environmentName)"
+    displayName: "Step 2: Display environment"
+
+  - script: echo "Running automated tests"
+    displayName: "Step 3: Run tests"
+    condition: and(succeeded(), eq(variables['runTests'], 'true'))
+
   - powershell: |
       $outputDir = "$(Build.ArtifactStagingDirectory)"
 
