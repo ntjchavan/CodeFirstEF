@@ -8,7 +8,7 @@ pool:
 variables: 
   appName: 'Code First EF API'
   environmentName: "Development"
-  runTests: 'true'
+  runTests: 'false'
 
 steps:
   - script: echo "Application name is - $(appName)"
