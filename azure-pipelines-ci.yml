@@ -100,7 +100,7 @@ stages:
             condition: and(
                           succeeded(), 
                           or(
-                          eq(variables['Build.SourceBranch'], 'refs/heads/main'), 
+                            eq(variables['Build.SourceBranch'], 'refs/heads/main'), 
                             eq(variables['Build.SourceBranch'], 'refs/heads/develop')
                           )
                           ne(variables['Build.Reason'], 'PullRequest')
