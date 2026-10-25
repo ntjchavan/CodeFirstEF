@@ -1,0 +1,55 @@
+trigger: none
+
+resources:
+  pipelines:
+  - pipeline: SampleCI # Any name you can give
+    source: SampleApplication-CI
+    trigger: 
+      branches: 
+        include:
+          - main
+          - stage
+          - develop
+
+pool: 
+  vmImage: 'windows-latest'
+
+stages:
+  - stage: DEV
+    displayName: 'Deploy to DEV'
+
+    jobs:
+      - deployment: DeployDEV
+        displayName: 'Deploy to DEV'
+        environment: DEV
+
+        strategy: 
+          runOnce:
+            deploy:
+              steps:
+                - download: SampleCI
+                  artifact: SampleApp
+
+                - script: |
+                    echo 'Deploying to DEV...'
+                  displayName: 'Deploy Application'
+
+#--------------------------------------------------------
+  - stage: QA
+    displayName: 'Deploy to QA'
+    dependsOn: DEV
+
+    jobs:
+      - deployment: DeployQA
+        displayName: 'Deploy to QA'
+        environment: QA
+
+        strategy: 
+          runOnce:
+            deploy:
+              steps:
+                - download: SampleCI
+                  artifact: SampleApp
+
+                - script: echo 'Deploying to QA'
+                  displayName: 'Deploy Application'
