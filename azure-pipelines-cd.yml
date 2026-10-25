@@ -3,7 +3,7 @@ trigger: none
 resources:
   pipelines:
   - pipeline: SampleCI # Any name you can give
-    source: SampleApplication-CI
+    source: SampleApplication-CI # Name of pipeline, it will be show when you create pipeline, you can rename as well
     trigger: 
       branches: 
         include:
@@ -27,8 +27,8 @@ stages:
           runOnce:
             deploy:
               steps:
-                - download: SampleCI
-                  artifact: SampleApp
+                - download: WebAPICode
+                  artifact: CodeFirstEF
 
                 - script: |
                     echo 'Deploying to DEV...'
@@ -48,8 +48,8 @@ stages:
           runOnce:
             deploy:
               steps:
-                - download: SampleCI
-                  artifact: SampleApp
+                - download: WebAPICode
+                  artifact: CodeFirstEF # Artifact name from CI file
 
                 - script: echo 'Deploying to QA'
                   displayName: 'Deploy Application'

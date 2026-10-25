@@ -1,4 +1,4 @@
-name: 'SampleApplication_$(SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)'
+name: 'CodeFirstEF(SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)'
 
 trigger:
   branches:
@@ -22,10 +22,10 @@ parameters:
 
 variables:
   buildConfiguration: 'Release'
-  applicationName: 'Sample Application'
-  solutionName: 'SampleConsoleApp.slnx'
-  appProject: 'SampleConsoleApp/SampleConsoleApp.csproj'
-  testProject: 'SampleTestProject/SampleTestProject.csproj'
+  applicationName: 'Code First EF'
+  solutionName: 'CodeFirstEFAPI.sln'
+  appProject: 'src/CodeFirstEFAPI/CodeFirstEFAPI.csproj'
+  testProject: 'tests/CodeFirstEFAPI.Tests/CodeFirstEFAPI.Tests.csproj'
 
 pool:
   vmImage: 'windows-latest'
@@ -104,7 +104,7 @@ stages:
                         )
             inputs:
               targetPath: '$(Build.ArtifactStagingDirectory)/app'
-              artifact: 'SampleApp'
+              artifact: 'CodeFirstEF'
               publishLocation: pipeline
  
   - stage: testParameter
