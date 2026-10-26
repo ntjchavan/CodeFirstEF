@@ -1,4 +1,4 @@
-name: 'CodeFirstEF(SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)'
+name: 'CodeFirstEF_$(SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)'
 
 trigger:
   branches:
@@ -37,8 +37,14 @@ stages:
       - job: BuildAndTestJob
         displayName: 'Build And Test Job'
         steps:
-          - script: echo "Application name is - $(applicationName) and source branch $(Build.SourceBranch), branchname $(SourceBranchName)"
+          - script: echo "Application name is - $(applicationName)"
             displayName: "Application Name"
+
+          - script: |
+              echo Build.SourceBranch=$(Build.SourceBranch)
+              echo Build.SourceBranchName=$(Build.SourceBranchName)
+              echo Build.Reason=$(Build.Reason)
+            displayName: 'Debug Pipeline Variables'
 
           - task: UseDotNet@2
             displayName: 'Install .NET 10 SDK'
@@ -99,7 +105,10 @@ stages:
             displayName: 'Publish Artifact'
             condition: and(
                           succeeded(), 
-                          eq(variables['Build.SourceBranch'], 'refs/heads/main'), 
+                          or(
+                            eq(variables['Build.SourceBranch'], 'refs/heads/main'), 
+                            eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+                          ),
                           ne(variables['Build.Reason'], 'PullRequest')
                         )
             inputs:
