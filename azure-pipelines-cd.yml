@@ -2,8 +2,8 @@ trigger: none
 
 resources:
   pipelines:
-  - pipeline: SampleCI # Any name you can give
-    source: SampleApplication-CI # Name of pipeline, it will be show when you create pipeline, you can rename as well
+  - pipeline: CodeFirstCI # Any name you can give
+    source: CodeFirstEF-CI # Name of pipeline, it will be show when you create pipeline, you can rename as well
     trigger: 
       branches: 
         include:
