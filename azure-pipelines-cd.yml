@@ -71,11 +71,9 @@ stages:
 #--------------------------------------------------------
   - stage: UAT
     displayName: 'Deploy to UAT'
-    condition: and(
-        startsWith(
+    condition: startsWith(
           variables['resources.pipeline.CodeFirstCI.sourceBranch'], 
           'refs/heads/release-'
-        )
       )
 
     jobs:
