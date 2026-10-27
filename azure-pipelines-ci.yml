@@ -1,0 +1,128 @@
+name: 'CodeFirstEF_$(SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)'
+
+trigger:
+  branches:
+    include:
+      - main
+      - stage
+      - develop
+
+pr:
+  branches:
+    include:
+      - main
+      - stage
+      - develop
+
+parameters:
+  - name: runTests
+    displayName: 'Run unit tests'
+    type: boolean
+    default: true
+
+variables:
+  buildConfiguration: 'Release'
+  applicationName: 'Code First EF'
+  solutionName: 'CodeFirstEFAPI.sln'
+  appProject: 'src/CodeFirstEFAPI/CodeFirstEFAPI.csproj'
+  testProject: 'tests/CodeFirstEFAPI.Tests/CodeFirstEFAPI.Tests.csproj'
+
+pool:
+  vmImage: 'windows-latest'
+  
+stages:
+  - stage: BuildAndTest
+    displayName: 'Build and Test Application'
+    jobs: 
+      - job: BuildAndTestJob
+        displayName: 'Build And Test Job'
+        steps:
+          - script: echo "Application name is - $(applicationName)"
+            displayName: "Application Name"
+
+          - script: |
+              echo Build.SourceBranch=$(Build.SourceBranch)
+              echo Build.SourceBranchName=$(Build.SourceBranchName)
+              echo Build.Reason=$(Build.Reason)
+            displayName: 'Debug Pipeline Variables'
+
+          - task: UseDotNet@2
+            displayName: 'Install .NET 10 SDK'
+            inputs:
+              packageType: 'sdk'
+              version: '10.0.104'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Restore Application'
+            inputs:
+              command: 'restore'
+              projects: '$(solutionName)'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Build Application'
+            inputs:
+              command: build
+              projects: $(solutionName)
+              arguments: '--configuration $(buildConfiguration) --no-restore'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Run unit tests'
+            inputs:
+              command: test
+              projects: '$(testProject)'
+              arguments: >
+                --configuration $(buildConfiguration)
+                --no-build
+                --logger trx
+                --collect "XPlat Code Coverage"
+              publishTestResults: true
+
+          - task: PublishTestResults@2
+            displayName: 'Publish Test Results'
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: VSTest
+              testResultsFiles: '**/*.trx'
+              failTaskOnFailedTests: true
+
+          - task: PublishCodeCoverageResults@2
+            displayName: 'Publish Coverage Results'
+            condition: succeededOrFailed()
+            inputs:
+              codeCoverageTool: Cobertura
+              summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Publish Application'
+            inputs:
+              command: 'publish'
+              publishWebProjects: false
+              projects: $(appProject)
+              arguments: '--configuration $(buildConfiguration) --no-build --output $(Build.ArtifactStagingDirectory)/app'
+              zipAfterPublish: true
+
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish Artifact'
+            condition: and(
+                          succeeded(), 
+                          or(
+                            eq(variables['Build.SourceBranch'], 'refs/heads/main'), 
+                            eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+                          ),
+                          ne(variables['Build.Reason'], 'PullRequest')
+                        )
+            inputs:
+              targetPath: '$(Build.ArtifactStagingDirectory)/app'
+              artifact: 'CodeFirstEF'
+              publishLocation: pipeline
+ 
+  - stage: testParameter
+    displayName: 'Testing parameters'
+    dependsOn: BuildAndTest
+    condition: and(succeeded(), ${{ parameters.runTests }})
+    jobs:
+      - job: TestParameterJob
+        displayName: 'Testing parameter job'
+        steps:
+          - script: echo 'For parameter testing'
+            displayName: 'Parameter testing'
