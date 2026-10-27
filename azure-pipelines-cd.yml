@@ -63,7 +63,7 @@ stages:
             deploy:
               steps:
                 - download: CodeFirstCI
-                  artifact: CodeFirstEF
+                  artifact: CodeFirstEF # Artifact name from CI file
 
                 - script: echo 'Deploying to QA'
                   displayName: 'Deploy Application'
