@@ -6,6 +6,12 @@ trigger:
       - main
       - stage
       - develop
+      - release-*
+
+  paths:
+    exclude:
+      - azure-pipelines-cd.yml
+      - azure-pipelines-ci.yml
 
 pr:
   branches:
@@ -13,6 +19,7 @@ pr:
       - main
       - stage
       - develop
+      - release-*
 
 parameters:
   - name: runTests
@@ -107,7 +114,8 @@ stages:
                           succeeded(), 
                           or(
                             eq(variables['Build.SourceBranch'], 'refs/heads/main'), 
-                            eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+                            eq(variables['Build.SourceBranch'], 'refs/heads/develop'),
+                            startsWith(variables['Build.SourceBranch'], 'refs/heads/release-')
                           ),
                           ne(variables['Build.Reason'], 'PullRequest')
                         )

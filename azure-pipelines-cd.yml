@@ -1,5 +1,11 @@
 trigger: none
 
+parameters:
+  - name: CRNumber
+    displayName: 'Change Request Number'
+    type: string
+    default: ''
+
 resources:
   pipelines:
   - pipeline: CodeFirstCI # Any name you can give
@@ -17,6 +23,10 @@ pool:
 stages:
   - stage: DEV
     displayName: 'Deploy to DEV'
+    condition: eq(
+        variables['resources.pipeline.CodeFirstCI.sourceBranch'],
+        'refs/heads/develop'
+      )
 
     jobs:
       - deployment: DeployDEV
@@ -27,8 +37,8 @@ stages:
           runOnce:
             deploy:
               steps:
-                - download: CodeFirstCI
-                  artifact: CodeFirstEF
+                - download: CodeFirstCI # pipeline resource name from above section
+                  artifact: CodeFirstEF # Artifact name from CI file
 
                 - script: |
                     echo 'Deploying to DEV...'
@@ -38,6 +48,10 @@ stages:
   - stage: QA
     displayName: 'Deploy to QA'
     dependsOn: DEV
+    condition: eq(
+        variables['resources.pipeline.CodeFirstCI.sourceBranch'],
+        'refs/heads/develop'
+      )
 
     jobs:
       - deployment: DeployQA
@@ -53,3 +67,63 @@ stages:
 
                 - script: echo 'Deploying to QA'
                   displayName: 'Deploy Application'
+
+#--------------------------------------------------------
+  - stage: UAT
+    displayName: 'Deploy to UAT'
+    condition: startsWith(
+          variables['resources.pipeline.CodeFirstCI.sourceBranch'], 
+          'refs/heads/release-'
+      )
+
+    jobs:
+      - deployment: DeployUAT
+        displayName: 'Deploy to UAT'
+        environment: UAT
+
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: CodeFirstCI
+                  artifact: CodeFirstEF
+
+                - script: echo 'Deploying to UAT'
+                  displayName: 'Deploy Application'
+
+#--------------------------------------------------------
+  - stage: PROD
+    displayName: 'Deploy to PROD'
+    dependsOn: UAT
+    condition: and(
+        succeeded(),
+        startsWith(
+          variables['resources.pipeline.CodeFirstCI.sourceBranch'], 
+          'refs/heads/release-'
+        )
+      )
+
+    jobs:
+      - deployment: DeployPROD
+        displayName: 'Deploy to PROD'
+        environment: PROD
+
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: CodeFirstCI
+                  artifact: CodeFirstEF
+
+                - powershell: |
+                    $cr = "${{ parameters.CRNumber }}"
+                    if ([string]::IsNullOrEmpty($cr)) {
+                      Write-Error "Change Request Number is required for PROD deployment."
+                      exit 1
+                    }
+                    Write-Host "Approved CR Number: $cr"
+                  displayName: 'Validate CR Number'
+
+                - script: echo 'Deploying to PROD'
+                  displayName: 'Deploy Application'
+
