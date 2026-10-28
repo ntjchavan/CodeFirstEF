@@ -1,11 +1,5 @@
 trigger: none
 
-parameters:
-  - name: CRNumber
-    displayName: 'Change Request Number'
-    type: string
-    default: ''
-
 resources:
   pipelines:
   - pipeline: CodeFirstCI # Any name you can give
@@ -127,15 +121,6 @@ stages:
               steps:
                 - download: CodeFirstCI
                   artifact: CodeFirstEF
-
-                - powershell: |
-                    $cr = "${{ parameters.CRNumber }}"
-                    if ([string]::IsNullOrEmpty($cr)) {
-                      Write-Error "Change Request Number is required for PROD deployment."
-                      exit 1
-                    }
-                    Write-Host "Approved CR Number: $cr"
-                  displayName: 'Validate CR Number'
 
                 - script: echo 'Deploying to PROD'
                   displayName: 'Deploy Application'
