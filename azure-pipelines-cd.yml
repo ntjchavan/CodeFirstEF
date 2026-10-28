@@ -16,9 +16,13 @@ resources:
           - main
           - stage
           - develop
+          - release-*
 
 pool: 
   vmImage: 'windows-latest'
+
+variables:
+  azureServiceConnection: 'Pay-As-You-Go (0707fc9e-146d-4c80-b6e5-2c703c7b8c2b)'
 
 stages:
   - stage: DEV
@@ -43,6 +47,15 @@ stages:
                 - script: |
                     echo 'Deploying to DEV...'
                   displayName: 'Deploy Application'
+
+                - task: AzureWebApp@1
+                  displayName: 'Deploy Web API to DEV'
+                  inputs:
+                    azureSubscription: '$(azureServiceConnection)'
+                    appType: 'webApp'
+                    appName: 'YOUR-DEV-APP-SERVICE-NAME'
+                    package: '$(Pipeline.Workspace)/CodeFirstCI/CodeFirstEF/**/*.zip'
+                    deploymentMethod: 'auto'
 
 #--------------------------------------------------------
   - stage: QA
