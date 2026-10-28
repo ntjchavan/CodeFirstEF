@@ -90,7 +90,7 @@ stages:
     displayName: 'Deploy to PROD'
     dependsOn: UAT
     condition: and(
-        succeeded(),
+        succeeded('UAT'),
         startsWith(
           variables['resources.pipeline.CodeFirstCI.sourceBranch'], 
           'refs/heads/release-'
