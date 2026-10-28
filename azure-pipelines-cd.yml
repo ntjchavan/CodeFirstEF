@@ -48,15 +48,6 @@ stages:
                     echo 'Deploying to DEV...'
                   displayName: 'Deploy Application'
 
-                - task: AzureWebApp@1
-                  displayName: 'Deploy Web API to DEV'
-                  inputs:
-                    azureSubscription: '$(azureServiceConnection)'
-                    appType: 'webApp'
-                    appName: 'myfirst-webapi-webapp'
-                    package: '$(Pipeline.Workspace)/CodeFirstCI/CodeFirstEF/**/*.zip'
-                    deploymentMethod: 'auto'
-
 #--------------------------------------------------------
   - stage: QA
     displayName: 'Deploy to QA'
